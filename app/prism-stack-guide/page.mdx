@@ -1,0 +1,291 @@
+# RaidGuild Prism Stack Guide
+
+Prism is RaidGuild's agent stack for turning community context into useful work. Most members interact with it through Discord and Queen Raida. Operators use Prism Refactory to manage requests, workflows, tasks, hooks, skills, and connected target repositories.
+
+Use this guide when you want Prism to find context, draft content, start a reviewed request, update a connected system, or help run a recurring automation.
+
+---
+
+## What Prism Is
+
+Prism is made of a few connected parts:
+
+- **Discord / Queen Raida**: the conversational surface where members can ask questions, start work, and review drafts.
+- **Prism Memory**: the memory layer for Discord activity, meeting summaries, knowledge artifacts, workflow artifacts, and searchable context.
+- **Prism Refactory**: the operator UI for requests, workflows, hooks, tasks, skills, target repos, settings, and execution history.
+- **Portal CMS**: the presentation and content layer for public RaidGuild updates. The related repo is `../payload-3-boilerplate`.
+- **Target repos**: GitHub repositories that Prism can inspect, change, test, and prepare pull requests against.
+- **Skills**: reusable agent capabilities, such as reading Prism Memory, drafting social posts, managing workflows, or working with target repos.
+- **Workflows**: structured request processes with review gates, implementation steps, checkpoints, and durable artifacts.
+- **Tasks**: scheduled automations that can summarize context, create requests, post updates, or run approved scripts.
+- **Hooks**: on-demand trigger endpoints for external systems or operator-run automations.
+
+The point is not to automate everything. The point is to keep context, drafts, code changes, and public outputs moving through the right review path.
+
+## Discord Surfaces
+
+Use Queen Raida when you want Prism to do work. Use other channels for normal discussion unless that channel or thread has been explicitly configured for Prism work.
+
+- **#queen-raida**: the main write and execution channel for agent work.
+- **Current blog post thread**: use for Portal and blog content drafting, review, and revision.
+- **Current X/social thread**: use for X drafts, reply suggestions, and social review.
+- **#so-dev**: the default announcement or output channel for engineering and operator-facing updates.
+- **Voice channels**: recordings can become transcripts and summaries that enter Prism Memory.
+
+If you are not sure whether a channel can trigger write behavior, assume it is discussion-only and ask in `#queen-raida`.
+
+## Access Model
+
+Most members should interact with Prism through Discord. Operators and admins can request Prism Refactory access when they need to manage the system itself.
+
+Refactory access can include:
+
+- Viewing and routing requests.
+- Managing workflows, tasks, hooks, skills, and target repos.
+- Reviewing artifacts and execution history.
+- Updating source adapter policy, branding, and instance settings.
+
+The default Discord policy is mostly read-only. Approved surfaces, such as `#queen-raida`, can allow write or execution behavior. Public publishing should still go through review unless a trusted operator explicitly approves immediate posting.
+
+## Slash Commands
+
+- `/prism-chat`: start or continue a normal Prism chat from Discord.
+- `/prism-start-cr`: create a tracked change request in Prism Refactory.
+- `/prism-continue-cr`: continue an existing change request workflow step.
+- `/prism-record`: start recording a voice session for transcript and summary processing.
+- `/prism-stoprecord`: stop the current recording session.
+- `/prism-rollcall`: ask Prism to report participant or attendance context for a session.
+- `/prism-health`: check whether the Prism Discord integration and related services are responding.
+
+Commands may vary by channel permissions. If a command does not appear, use `#queen-raida` or ask an operator.
+
+## Prompting Queen Raida
+
+Good prompts name the desired outcome, source context, destination, and review boundary.
+
+### Ask Prism Memory
+
+> @QueenRaida what did we decide in the last cohort call? Please cite the meeting summary or memory source.
+
+Use this when you need recent decisions, progress, or source context.
+
+### Create content
+
+> @QueenRaida draft a Portal blog post from this week's cohort notes and save it as a request for review. Do not publish publicly yet.
+
+Use this when the output should become a reviewed artifact before it goes public.
+
+### Use Portal CMS
+
+> @QueenRaida update the Portal CMS draft for the latest cohort announcement and leave it ready for operator review.
+
+Use this when the destination is the Portal CMS rather than a Discord-only draft.
+
+### Use X
+
+> @QueenRaida draft 3 X posts from the latest meeting summary for review in this thread. Do not post yet.
+
+Use this for social drafts, reply suggestions, and review packets.
+
+### Start a workflow
+
+> @QueenRaida create a request to update the Portal copy based on this thread.
+
+Use this when the work should enter Refactory workflow state, produce artifacts, and pass through review.
+
+### Create automation
+
+> @QueenRaida create a daily task that summarizes new Portal CMS requests and posts the summary to #so-dev for review.
+
+Use this when the work should run on a schedule. Be explicit about frequency, destination, and whether it may post automatically.
+
+### Prompting Rules
+
+- Name the destination: Discord channel or thread, Portal CMS, X draft, GitHub repo, or Refactory request.
+- Ask for review mode when the result needs approval.
+- Say "do not post publicly yet" when you want a draft only.
+- Say "create a request" when work should be tracked in Refactory.
+- Ask for sources when factual accuracy matters.
+
+## Prism Memory
+
+Prism Memory stores and indexes context that agents can use later:
+
+- Discord message collection from approved sources.
+- Meeting transcripts and summaries.
+- Knowledge sources, including docs and repo-backed references.
+- Artifacts created by workflows.
+- Portal and content context when linked or synced.
+
+Prism Memory is useful for:
+
+- Finding what happened.
+- Reconstructing what was decided.
+- Summarizing recent progress.
+- Finding source material for a draft.
+- Turning meeting notes into next actions.
+
+Memory is not perfect. For decisions, quotes, public claims, or sensitive work, ask Queen Raida to cite the source artifact, memory date, or knowledge document.
+
+## Target Repos and Knowledge Sources
+
+Target repos and knowledge sources work together. A target repo is where Prism can make reviewed changes. A knowledge source is where Prism can read and reindex reference material after it changes.
+
+For the handbook, that means:
+
+1. A member or operator asks Queen Raida to update handbook content.
+2. Prism creates or continues a change request against the handbook target repo.
+3. The agent edits the repo, runs checks, opens a PR, and waits for review.
+4. After the PR is merged, the handbook repo remains the source of truth.
+5. A knowledge source sync can reindex the updated handbook so future Queen Raida answers use the new material.
+
+That loop makes Prism more dynamic: the same system can update a canonical repo through a reviewed workflow, then read the updated repo back into Prism Memory or Prism Knowledge. Use it for durable docs, policies, runbooks, and guides that should improve future answers.
+
+When asking for this pattern, be explicit:
+
+> @QueenRaida create a change request to update the handbook target repo with the new Prism guidance. After it is merged, sync the handbook knowledge source so future answers can cite it.
+
+Do not treat knowledge sync as a substitute for review. The repo change should still pass through the normal branch, PR, and approval process before the knowledge source is refreshed.
+
+## Prism Refactory
+
+Prism Refactory is the operator UI. It is where tracked work becomes visible and reviewable.
+
+- **Requests**: work items, current workflow steps, approvals, artifacts, executions, and external refs.
+- **Tasks**: scheduled automations that can run prompts, scripts, or workflow-backed actions.
+- **Skills**: capabilities available to agents, including Prism-specific and target-specific tools.
+- **Workflows**: process definitions for drafting, implementation, review, checkpoints, and publishing.
+- **Hooks**: trigger URLs for external systems or on-demand workflow starts.
+- **Settings**: branding, source adapter policy, instance configuration, and integration behavior.
+
+Members usually do not need Refactory access. Operators use it when they need durable state, approvals, audit trails, or system configuration.
+
+## Current Important Skills
+
+The active skill set changes as the instance evolves. Treat these as the important categories to ask for, not a complete internal inventory.
+
+| Skill category | Use for | Typical prompt |
+| --- | --- | --- |
+| Portal CMS skills | Drafting, reviewing, and updating Portal content | "Draft a Portal update from this thread and save it for review." |
+| X / social skills | Drafting posts, replies, and review packets | "Draft 3 X posts from the latest meeting summary. Do not post yet." |
+| Prism Memory reader/search skills | Finding decisions, summaries, artifacts, and knowledge docs | "What did we decide about this in the last call? Cite sources." |
+| GitHub / target repo skills | Inspecting repos, making changes, running checks, and preparing PRs | "Create a request to update the handbook page based on this thread." |
+| Workflow, task, and skill authoring skills | Creating or updating Prism workflows, scheduled tasks, hooks, and skills | "Create a weekly task that drafts a #so-dev summary for review." |
+| Discord/output adapter skills | Sending or preparing Discord-facing summaries and updates | "Prepare a short #so-dev announcement from this request." |
+
+Ask an operator to verify the current enabled skills in Refactory before documenting a new operational dependency.
+
+## Current Workflows
+
+Workflows are how Prism keeps work reviewable. The current RaidGuild instance commonly uses these workflow types:
+
+| Workflow | Purpose | Typical trigger | Human review | Output |
+| --- | --- | --- | --- | --- |
+| Portal blog post workflow | Turn source context into a reviewed Portal or blog draft | Queen Raida prompt or Refactory request | Yes, before publish | Draft, review notes, CMS update packet |
+| X / social post workflow | Prepare X posts, replies, or social review packets | Social thread prompt or request | Yes, before posting unless explicitly approved | Draft posts and review artifacts |
+| Change request workflow | Make tracked changes to target repositories | `/prism-start-cr`, Queen Raida prompt, or Refactory request | Yes, before implementation and final close | Branch, commit, PR, build/test record |
+| Announcement / review workflow | Prepare member or operator announcements | Queen Raida prompt or scheduled task | Usually yes | Discord-ready announcement draft |
+| Podcast, video, or Remotion workflow | Prepare media render inputs and check render readiness when active | Operator request or media task | Yes, before publishing | Render packet, status, output links |
+
+If a workflow is not visible in Refactory, do not assume it is active. Ask an operator to confirm before relying on it for production work.
+
+## Tasks
+
+Tasks are scheduled automations. They can:
+
+- Create daily or weekly memory briefs.
+- Summarize Discord activity.
+- Draft X or content ideas for review.
+- Prepare Portal blog or content tasks.
+- Collect issue or PR context when configured.
+- Create requests, post to Discord, or run deterministic scripts.
+
+Operators can enable, disable, and update tasks in Refactory. When asking for a new task, include the schedule, source context, destination, review rule, and failure behavior.
+
+Example:
+
+> @QueenRaida create a weekday task that summarizes new Portal CMS requests at 9:00 UTC and posts a draft to #so-dev for review.
+
+## Hooks
+
+Hooks are on-demand trigger endpoints. They are useful when another system needs to start Prism work without a person typing a prompt.
+
+Hooks usually create a request first, then the workflow handles triage, review, implementation, and output. Use hooks for external events, operator buttons, or agent-triggered workflows where the input shape is predictable.
+
+Hooks should not bypass review for public publishing unless the workflow explicitly allows it.
+
+## Portal CMS Relationship
+
+Portal CMS is the presentation layer for public RaidGuild content. Prism can help draft, review, and update content, but publish rules should be explicit.
+
+- Drafts should usually become workflow artifacts or CMS drafts before publishing.
+- Public posts should go through review unless an operator explicitly approves publishing.
+- Portal changes should create a request when they affect public copy, campaign messaging, or reusable content.
+- Trivial CMS draft updates may be handled directly when the destination and review rule are clear.
+
+When asking Prism to work with Portal CMS, name whether you want a draft, a CMS update, a reviewed request, or a public publish action.
+
+## Operating Conventions
+
+- Use Queen Raida when you want Prism to do work.
+- Use normal channels for normal discussion unless they are configured for Prism execution.
+- Public posts should go through review unless explicitly approved.
+- Announcements default to `#so-dev` when no other destination is specified.
+- X posts should be drafted and reviewed in the current X/social thread before posting.
+- Portal changes should create a request unless the task is a trivial CMS draft update.
+- Ask Prism to cite memory, artifact, or knowledge sources for factual summaries.
+- Avoid sending secrets, private credentials, or sensitive personal information to Prism.
+- For repo work, ask for a request, branch, build result, and PR.
+
+## Example Workflows
+
+### Turn a Meeting Into a Blog Post
+
+1. Record the voice meeting with `/prism-record`.
+2. Stop recording with `/prism-stoprecord`.
+3. Ask Queen Raida to summarize the transcript and cite the artifact.
+4. Ask for a Portal blog draft from the summary.
+5. Say "create a request for review" so the draft enters Refactory.
+6. Review the draft before publishing.
+
+### Draft X Posts From Recent Memory
+
+1. Ask Queen Raida for recent source context and citations.
+2. Ask for 3-5 X drafts in the current social thread.
+3. Include "do not post publicly yet."
+4. Review tone, claims, tags, and links.
+5. Ask an operator to publish only after approval.
+
+### Record and Summarize a Voice Meeting
+
+1. Start recording in the voice channel with `/prism-record`.
+2. Hold the meeting.
+3. Stop recording with `/prism-stoprecord`.
+4. Ask Queen Raida for decisions, blockers, and next actions.
+5. Ask for sources if the summary will be used in public content.
+
+### Create a Portal CMS Announcement
+
+1. Give Queen Raida the source thread, announcement goal, and audience.
+2. Ask for a CMS-ready draft.
+3. Specify the destination and say whether it should create a request.
+4. Review the CMS draft or workflow artifact.
+5. Publish only after approval.
+
+### Create a Recurring Task
+
+1. Define the schedule, source, destination, and review rule.
+2. Ask Queen Raida to create a task in Refactory.
+3. Ask for the task to create requests or drafts instead of public posts unless automatic publishing is approved.
+4. Review the first run output.
+5. Ask an operator to adjust or disable the task if the output is noisy.
+
+## Quick Safety Checklist
+
+Before asking Prism to act, check:
+
+- Did you name the destination?
+- Did you say whether this is a draft, reviewed request, or public publish?
+- Did you ask for citations when facts matter?
+- Did you avoid secrets and private credentials?
+- Did you choose a workflow when the work should be tracked?
