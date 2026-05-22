@@ -127,6 +127,26 @@ Prism Memory is useful for:
 
 Memory is not perfect. For decisions, quotes, public claims, or sensitive work, ask Queen Raida to cite the source artifact, memory date, or knowledge document.
 
+## Target Repos and Knowledge Sources
+
+Target repos and knowledge sources work together. A target repo is where Prism can make reviewed changes. A knowledge source is where Prism can read and reindex reference material after it changes.
+
+For the handbook, that means:
+
+1. A member or operator asks Queen Raida to update handbook content.
+2. Prism creates or continues a change request against the handbook target repo.
+3. The agent edits the repo, runs checks, opens a PR, and waits for review.
+4. After the PR is merged, the handbook repo remains the source of truth.
+5. A knowledge source sync can reindex the updated handbook so future Queen Raida answers use the new material.
+
+That loop makes Prism more dynamic: the same system can update a canonical repo through a reviewed workflow, then read the updated repo back into Prism Memory or Prism Knowledge. Use it for durable docs, policies, runbooks, and guides that should improve future answers.
+
+When asking for this pattern, be explicit:
+
+> @QueenRaida create a change request to update the handbook target repo with the new Prism guidance. After it is merged, sync the handbook knowledge source so future answers can cite it.
+
+Do not treat knowledge sync as a substitute for review. The repo change should still pass through the normal branch, PR, and approval process before the knowledge source is refreshed.
+
 ## Prism Refactory
 
 Prism Refactory is the operator UI. It is where tracked work becomes visible and reviewable.
